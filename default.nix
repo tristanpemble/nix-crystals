@@ -90,7 +90,7 @@ let
   reduceCrystals = prefix: path: lib.mapAttrsToList (name: type:
     if type == "regular"
     then [ "${prefix}/${name}" ]
-    else if type != "unknown"
+    else if type == "directory"
     then reduceCrystals "${prefix}/${name}" "${path}/${name}"
     else []
   ) (builtins.readDir path);
