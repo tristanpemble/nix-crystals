@@ -9,6 +9,6 @@ with lib;
   };
 
   config = mkIf (config.overlays != {}) {
-    outputs = { inherit (config) templates; };
+    outputs = { inherit (config) overlays; };
   };
 }
