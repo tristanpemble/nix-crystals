@@ -4,7 +4,7 @@ with lib;
 
 {
   options.lib = mkOption {
-    type = with types; lazyAttrsOf raw;
+    type = with types; lazyAttrsOf unspecified;
     default = {};
   };
 

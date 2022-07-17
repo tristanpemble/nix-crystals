@@ -4,7 +4,7 @@ with lib;
 
 {
   options.shells = mkOption {
-    type = with types; attrsOf raw;
+    type = with types; lazyAttrsOf unspecified;
     default = {};
   };
 
