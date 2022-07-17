@@ -1,14 +1,12 @@
 {
   inputs = {
     nixlib.url = "github:nix-community/nixpkgs.lib";
-    utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixlib, utils, ... }@inputs:
-    let lib = nixlib.lib // utils.lib; in
-    let crystals = import ./. { inherit lib; }; in
+  outputs = { nixlib, ... }@inputs:
+    let crystals = import ./. { inherit (nixlib) lib; }; in
     crystals.lib.mkFlake {
-      inputs = inputs;
+      inherit inputs;
       imports = [
         ./default.nix
       ];
