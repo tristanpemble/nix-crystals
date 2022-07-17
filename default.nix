@@ -113,8 +113,15 @@ let
   mkFlake = crystals:
     let eval = evalCrystals crystals;
     in eval.config.outputs;
+
+  assembleFrom = { inputs, root, configuration ? {} }:
+    let imports = discoverCrystals root;
+    in mkFlake [ { inherit imports inputs; } configuration ];
 in {
   lib = {
-    inherit discoverCrystals evalCrystals mkFlake;
+    inherit assembleFrom discoverCrystals evalCrystals mkFlake;
+  };
+  outputs = {
+    inherit assembleFrom;
   };
 }

@@ -13,8 +13,8 @@ The name is based on the idea that it takes a bunch of crystals to form a snowfl
 
 ### Multi-file
 
-In large projects, you may want to break up your flake into smaller files. You can use the "discoverCrystals" to
-automatically find files named `crystal.nix`, and then import them:
+In large projects, you may want to break up your flake into smaller files. You can use "assembleFrom" to automatically
+assemble the flake from all the crystal files in your project (which should be named `crystal.nix`).
 
 `flake.nix`
 ```nix
@@ -24,9 +24,10 @@ automatically find files named `crystal.nix`, and then import them:
     nixpkgs = {};
   };
 
-  outputs = inputs: with inputs.crystals.lib;
-    let imports = discoverCrystals ./.;
-    in mkFlake { inherit imports inputs; };
+  outputs = inputs: inputs.crystals.assembleFrom {
+    inherit inputs;
+    root = ./.;
+  };
 }
 ```
 
@@ -45,8 +46,9 @@ automatically find files named `crystal.nix`, and then import them:
 
 ### Single-file
 
-In a smaller, more standard flakes with a small number of packages, you might use this to avoid dealing with nixpkgs and
-the mildly annoying system maps:
+In a smaller, more standard flakes that have a small number of packages, you can skip the crystals and just use the
+module system directly. This might be helpful if you to avoid dealing with nixpkgs and the mildly annoying system maps
+that can create a verbose `flake.nix`. The result looks like this:
 
 `flake.nix`
 ```nix
@@ -56,20 +58,21 @@ the mildly annoying system maps:
     nixpkgs = {};
   };
 
-  outputs = inputs: inputs.crystals.lib.mkFlake ({ config, ... }: {
+  outputs = inputs: inputs.crystals.lib.mkFlake {
     inherit inputs;
-    packages.default = config.packages.package-a;
-    packages.package-a =
-      { runCommand }:
-      runCommand "package-a" {} ''
-        echo "Hello, world!" > $out
-      '';
-
-    packages.macos-only =
-      { lib, runCommand, stdenv }:
-      lib.mkIf stdenv.isDarwin (runCommand "my-macos-package" {} ''
-        echo "Hello, darwin!" > $out
-      '');
-  });
+    packages.default = ./.;
+    overlays.default = final: prev: {
+      my-app = final.callPackage ./. {};
+    };
+  };
 }
+```
+
+`default.nix`
+```nix
+{ runCommand }:
+
+runCommand "package-a" {} ''
+  echo "Hello, world!" > $out
+''
 ```
