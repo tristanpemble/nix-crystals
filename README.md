@@ -20,10 +20,8 @@ The name is based on the idea that it takes a bunch of crystals to form a snowfl
   };
 
   outputs = { crystals, ... }@inputs: with crystals.lib;
-    mkFlake {
-      inherit inputs;
-      imports = discoverCrystals ./.;
-    };
+    let imports = discoverCrystals ./.;
+    in mkFlake { inherit imports inputs; };
 }
 ```
 
