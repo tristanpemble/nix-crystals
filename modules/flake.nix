@@ -19,6 +19,6 @@ with lib;
   };
 
   config._module.args = {
-    inherit nixpkgs;
+    inherit (config.inputs) nixpkgs;
   };
 }

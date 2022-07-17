@@ -4,13 +4,20 @@ with lib;
 
 {
   options.packages = mkOption {
-    type = with types; attrsOf raw;
+    type = types.submoduleWith {
+      modules = [{
+        freeformType = with types; lazyAttrsOf (uniq unspecified);
+      }];
+    };
     default = {};
   };
 
   options.outputs.packages = mkOption {
-    type = with types; attrsOf (attrsOf package);
-    default = {};
+    type = types.submoduleWith {
+      modules = [{
+        freeformType = with types; lazyAttrsOf (uniq unspecified);
+      }];
+    };
     internal = true;
     visible = false;
     apply = filterAttrs (n: v: (builtins.length (builtins.attrNames v) > 0));

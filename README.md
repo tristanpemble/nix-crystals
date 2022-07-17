@@ -19,9 +19,11 @@ The name is based on the idea that it takes a bunch of crystals to form a snowfl
     nixpkgs = {};
   };
 
-  outputs = inputs: inputs.crystals.lib.mkFlake ./. {
-    inherit inputs;
-  };
+  outputs = { crystals, ... }@inputs: with crystals.lib;
+    mkFlake {
+      inherit inputs;
+      imports = discoverCrystals ./.;
+    };
 }
 ```
 
