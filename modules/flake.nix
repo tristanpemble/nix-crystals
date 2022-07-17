@@ -13,6 +13,11 @@ with lib;
     type = with types; lazyAttrsOf unspecified;
   };
 
+  options.outputs = mkOption {
+    type = with types; lazyAttrsOf (uniq unspecified);
+    default = {};
+  };
+
   options.systems = mkOption {
     type = with types; listOf (enum allSystems);
     default = defaultSystems;
